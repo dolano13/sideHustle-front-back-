@@ -8,13 +8,16 @@ const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
 
 router.post("/signup", (req, res, next) => {
+  console.log("attempting to sign up ------- ", req.body);
   const { username, password, name } = req.body;
   if (!username || !password) {
-    res.status(400).json({ message: "Indicate username and password" });
+    console.log("must have an email and pw");
+    res.status(400).json({ message: "Indicate email and password" });
     return;
   }
   User.findOne({ username })
     .then(userDoc => {
+      console.log("checking for user in db  ----- ", userDoc);
       if (userDoc !== null) {
         res.status(409).json({ message: "The username already exists" });
         return;
@@ -25,6 +28,11 @@ router.post("/signup", (req, res, next) => {
       return newUser.save();
     })
     .then(userSaved => {
+      console.log(
+        "created uer and now sending info back ============ ",
+        userSaved
+      );
+
       // LOG IN THIS USER
       // "req.logIn()" is a Passport method that calls "serializeUser()"
       // (that saves the USER ID in the session)
